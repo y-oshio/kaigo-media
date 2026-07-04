@@ -1,0 +1,71 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "article-plan.schema.json",
+  "title": "ArticlePlan — content-architect → writer",
+  "type": "object",
+  "required": ["kwId", "title", "description", "slug", "cluster", "intentSummary", "headings", "uniqueValue", "ctaPlacements", "requiredSources", "supervisorRequired"],
+  "additionalProperties": false,
+  "properties": {
+    "kwId": { "type": "string" },
+    "title": { "type": "string", "maxLength": 40 },
+    "description": { "type": "string", "maxLength": 120 },
+    "slug": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+    "cluster": { "enum": ["c2", "c3", "c4", "c5", "c6"] },
+    "intentSummary": { "type": "string", "description": "検索意図の1文言語化" },
+    "headings": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 10,
+      "items": {
+        "type": "object",
+        "required": ["level", "text", "purpose"],
+        "properties": {
+          "level": { "enum": [2, 3] },
+          "text": { "type": "string" },
+          "purpose": { "type": "string" },
+          "mustInclude": { "type": "array", "items": { "type": "string" } },
+          "sourcesNeeded": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
+    "uniqueValue": {
+      "type": "object",
+      "required": ["type", "spec"],
+      "properties": {
+        "type": { "enum": ["experience", "data", "diagnosis-connection", "original-visual", "comparison"] },
+        "spec": { "type": "string", "minLength": 15 }
+      }
+    },
+    "faq": {
+      "type": "array",
+      "maxItems": 4,
+      "items": {
+        "type": "object",
+        "required": ["q"],
+        "properties": { "q": { "type": "string" }, "aDraft": { "type": "string" } }
+      }
+    },
+    "ctaPlacements": {
+      "type": "array",
+      "maxItems": 2,
+      "items": {
+        "type": "object",
+        "required": ["position", "type"],
+        "properties": {
+          "position": { "enum": ["after-lead", "footer"] },
+          "type": { "type": "string", "description": "affiliate slug / diagnosis / line" }
+        }
+      }
+    },
+    "requiredSources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["claim"],
+        "properties": { "claim": { "type": "string" }, "sourceHint": { "type": "string" } }
+      }
+    },
+    "internalLinkHints": { "type": "array", "items": { "type": "string" } },
+    "supervisorRequired": { "type": "boolean" }
+  }
+}

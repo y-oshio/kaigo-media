@@ -1,0 +1,29 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "keyword-brief.schema.json",
+  "title": "KeywordBrief — keyword-strategist → content-architect",
+  "type": "object",
+  "required": ["kwId", "cluster", "primaryQuery", "intent", "url", "volumeNote", "cannibalCheck", "ctaPolicy", "supervisorRequired"],
+  "additionalProperties": false,
+  "properties": {
+    "kwId": { "type": "string", "pattern": "^kw-[0-9]{3,}$" },
+    "orderId": { "type": "string" },
+    "cluster": { "enum": ["c2", "c3", "c4", "c5", "c6"] },
+    "primaryQuery": { "type": "string", "minLength": 2 },
+    "secondaryQueries": { "type": "array", "items": { "type": "string" }, "maxItems": 5 },
+    "intent": { "enum": ["know", "do", "compare", "worry"] },
+    "url": { "type": "string", "pattern": "^/(shikaku|tenshoku|shisetsu|shokushu|kyuryo/guide)/[a-z0-9-]+/$" },
+    "volumeNote": { "type": "string", "description": "仮説ID(H-xx)・実測値・「要実測」のいずれか。裸の断定数値は不可" },
+    "serpNote": { "type": "string" },
+    "cannibalCheck": {
+      "type": "object",
+      "required": ["verdict"],
+      "properties": {
+        "verdict": { "enum": ["clear", "replaced"] },
+        "dupWith": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "ctaPolicy": { "type": "object" },
+    "supervisorRequired": { "type": "boolean" }
+  }
+}

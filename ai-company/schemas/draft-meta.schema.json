@@ -1,0 +1,26 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "draft-meta.schema.json",
+  "title": "DraftMeta — writer → fact-checker(本文 .md に添付するメタ)",
+  "type": "object",
+  "required": ["kwId", "draftPath", "charCount", "claimMarkerCount", "selfReview"],
+  "additionalProperties": false,
+  "properties": {
+    "kwId": { "type": "string" },
+    "draftPath": { "type": "string" },
+    "charCount": { "type": "integer", "minimum": 1 },
+    "claimMarkerCount": { "type": "integer", "minimum": 0, "description": "【要出典】マーカー数" },
+    "experienceSlots": { "type": "integer", "description": "<!-- EXPERIENCE-SLOT --> の数" },
+    "selfReview": {
+      "type": "object",
+      "required": ["headingsMatchPlan", "bannedPhrasesZero", "ctaWithinPolicy", "frontmatterComplete"],
+      "properties": {
+        "headingsMatchPlan": { "type": "boolean" },
+        "bannedPhrasesZero": { "type": "boolean" },
+        "ctaWithinPolicy": { "type": "boolean" },
+        "frontmatterComplete": { "type": "boolean" },
+        "notes": { "type": "string" }
+      }
+    }
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "eeat-report.schema.json",
+  "title": "EeatReport — eeat-reviewer → writer(差し戻し) / publish-manager",
+  "type": "object",
+  "required": ["kwId", "verdict", "prNotice", "supervisor", "issues"],
+  "additionalProperties": false,
+  "properties": {
+    "kwId": { "type": "string" },
+    "verdict": { "enum": ["pass", "fix-required", "reject"] },
+    "roundtrips": { "type": "integer", "minimum": 0, "maximum": 3, "description": "writerとの往復回数(最大2。3でreject)" },
+    "prNotice": {
+      "type": "object",
+      "required": ["required", "present"],
+      "properties": { "required": { "type": "boolean" }, "present": { "type": "boolean" } }
+    },
+    "supervisor": {
+      "type": "object",
+      "required": ["required"],
+      "properties": {
+        "required": { "type": "boolean" },
+        "assignedId": { "type": "string" },
+        "requestDraftPath": { "type": "string" },
+        "completed": { "type": "boolean" }
+      }
+    },
+    "experienceSlots": {
+      "type": "object",
+      "properties": { "present": { "type": "integer" }, "filled": { "type": "integer" } }
+    },
+    "issues": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["severity", "location", "instruction"],
+        "properties": {
+          "severity": { "enum": ["blocker", "major", "minor"] },
+          "location": { "type": "string", "description": "見出し名+段落位置で特定" },
+          "instruction": { "type": "string", "description": "どこを・どう直すか" }
+        }
+      }
+    },
+    "aiPatternFlags": { "type": "array", "items": { "type": "string" } },
+    "toneIssues": { "type": "array", "items": { "type": "string" } }
+  }
+}

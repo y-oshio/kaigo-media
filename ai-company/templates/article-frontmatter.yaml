@@ -1,0 +1,16 @@
+# 記事 frontmatter テンプレート(設計書06章 §2-4 準拠)
+# writer が全項目を埋める。sources は fact-checker が確定値で上書きする。
+
+title: ""                    # 32字前後・primaryQuery含有・誇大表現禁止
+description: ""              # 120字以内・クリック動機を1要素
+cluster: ""                  # shikaku | tenshoku | shisetsu | shokushu | kyuryo(URL側は /kyuryo/guide/)
+targetQueries: []            # keyword-brief の primary + secondary(カニバリ検知の台帳になる)
+authorId: ""                 # 執筆者マスタのID(実在IDのみ)
+supervisorId: ""             # 監修必須クラスタで空のまま公開は publish-gate で fail になる
+publishedAt:                 # publish-manager が確定(YYYY-MM-DD)
+updatedAt:                   # 初回は publishedAt と同値
+sources: []                  # fact-checker が確定。形式:
+                             #   - { name: "令和6年度介護従事者処遇状況等調査", url: "https://...", checkedAt: 2026-07-04 }
+prRelated: true              # アフィリエイトリンクを含むpage は必ず true(PR表記が自動挿入される)
+experienceFilled: false      # EXPERIENCE-SLOT に真正な体験談を挿入済みなら true(人間が更新)
+draft: true                  # 公開承認まで true(人間が false にする = 公開)

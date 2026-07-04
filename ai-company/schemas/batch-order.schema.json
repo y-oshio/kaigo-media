@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "batch-order.schema.json",
+  "title": "BatchOrder — ユーザー発注(パイプラインの起点)",
+  "type": "object",
+  "required": ["orderId", "requestedCount"],
+  "additionalProperties": false,
+  "properties": {
+    "orderId": { "type": "string", "pattern": "^ord-[a-z0-9-]+$", "description": "発注ID(例 ord-2026-07-04-a)" },
+    "requestedCount": { "type": "integer", "minimum": 1, "maximum": 500 },
+    "clusters": {
+      "type": "array",
+      "items": { "enum": ["c2", "c3", "c4", "c5", "c6"] },
+      "description": "希望クラスタ(省略時は seo-director が設計書の優先順位で配分)。c1(過去問)は記事パイプライン対象外"
+    },
+    "notes": { "type": "string", "description": "ユーザーの自由記述(納期・テーマ希望など)" }
+  }
+}

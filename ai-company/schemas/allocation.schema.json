@@ -1,0 +1,46 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "allocation.schema.json",
+  "title": "Allocation — seo-director → keyword-strategist",
+  "type": "object",
+  "required": ["orderId", "batches", "constraints"],
+  "additionalProperties": false,
+  "properties": {
+    "orderId": { "type": "string" },
+    "phase": { "type": "string", "description": "判定した現在フェーズ(例 Phase 1)" },
+    "batches": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["cluster", "count", "priority", "rationale", "supervisorRequired", "ctaPolicy"],
+        "additionalProperties": false,
+        "properties": {
+          "cluster": { "enum": ["c2", "c3", "c4", "c5", "c6"] },
+          "count": { "type": "integer", "minimum": 1 },
+          "priority": { "enum": ["P0", "P1", "P2", "P3"] },
+          "rationale": { "type": "string", "minLength": 10 },
+          "supervisorRequired": { "type": "boolean" },
+          "ctaPolicy": {
+            "type": "object",
+            "required": ["strength", "primary"],
+            "properties": {
+              "strength": { "enum": ["strong", "medium", "weak"] },
+              "primary": { "type": "string" },
+              "secondary": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "constraints": {
+      "type": "object",
+      "required": ["forbiddenTopics"],
+      "properties": {
+        "forbiddenTopics": { "type": "array", "items": { "type": "string" } },
+        "styleNotes": { "type": "string" },
+        "subBatchSize": { "type": "integer", "description": "50超の発注時の分割単位" }
+      }
+    }
+  }
+}

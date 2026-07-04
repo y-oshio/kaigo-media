@@ -1,0 +1,38 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "publish-manifest.schema.json",
+  "title": "PublishManifest — publish-manager → 人間(最終承認者)",
+  "type": "object",
+  "required": ["kwId", "slug", "targetPath", "status", "checklist", "humanActions"],
+  "additionalProperties": false,
+  "properties": {
+    "kwId": { "type": "string" },
+    "slug": { "type": "string" },
+    "targetPath": { "type": "string", "description": "公開時の配置先(content/<cluster>/<slug>.md)" },
+    "status": { "enum": ["ready", "awaiting-supervisor", "blocked"] },
+    "blockedReasons": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["item", "returnTo"],
+        "properties": {
+          "item": { "type": "string", "description": "fail したチェック項目" },
+          "returnTo": { "enum": ["writer", "fact-checker", "eeat-reviewer", "internal-linker", "schema-generator", "content-architect"] }
+        }
+      }
+    },
+    "checklist": {
+      "type": "object",
+      "additionalProperties": { "enum": ["pass", "fail", "skipped"] },
+      "description": "publish-gate.md の項目名→結果。skipped は理由を humanActions に記載"
+    },
+    "inboundInstructions": { "type": "array", "items": { "type": "object" }, "description": "既存記事へのリンク挿入指示(link-plan から転記)" },
+    "jsonldPath": { "type": "string" },
+    "publishOrder": { "type": "integer", "description": "バッチ内の公開順(リンク依存の解決結果)" },
+    "humanActions": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "人間がやること(例: 公開承認 / 監修依頼を送付 / EXPERIENCE-SLOT に体験談を挿入)"
+    }
+  }
+}

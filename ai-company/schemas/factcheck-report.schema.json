@@ -1,0 +1,46 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "factcheck-report.schema.json",
+  "title": "FactcheckReport — fact-checker → eeat-reviewer / publish-manager",
+  "type": "object",
+  "required": ["kwId", "claims", "summary"],
+  "additionalProperties": false,
+  "properties": {
+    "kwId": { "type": "string" },
+    "claims": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["claimText", "verdict"],
+        "additionalProperties": false,
+        "properties": {
+          "claimText": { "type": "string" },
+          "verdict": { "enum": ["verified", "rewrite", "delete"] },
+          "sourceUrl": { "type": "string", "format": "uri" },
+          "sourceName": { "type": "string" },
+          "checkedAt": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$", "description": "実際にアクセスして確認した日のみ" },
+          "definitionNote": { "type": "string", "description": "統計の定義差の注記(例: 平均給与額=基本給+手当+一時金(4〜9月支給額の1/6))" },
+          "rewriteSuggestion": { "type": "string" },
+          "unmarked": { "type": "boolean", "description": "writerがマーカーを付け漏れた主張の場合 true" }
+        },
+        "allOf": [
+          {
+            "if": { "properties": { "verdict": { "const": "verified" } } },
+            "then": { "required": ["sourceUrl", "sourceName", "checkedAt"] }
+          }
+        ]
+      }
+    },
+    "summary": {
+      "type": "object",
+      "required": ["total", "verified", "rewrites", "deletes", "blockers"],
+      "properties": {
+        "total": { "type": "integer" },
+        "verified": { "type": "integer" },
+        "rewrites": { "type": "integer" },
+        "deletes": { "type": "integer" },
+        "blockers": { "type": "array", "items": { "type": "string" }, "description": "削除により記事の主旨が崩れる等、公開を止めるべき事情" }
+      }
+    }
+  }
+}

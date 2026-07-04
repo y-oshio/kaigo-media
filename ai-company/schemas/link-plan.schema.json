@@ -1,0 +1,42 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "link-plan.schema.json",
+  "title": "LinkPlan — internal-linker → schema-generator / publish-manager",
+  "type": "object",
+  "required": ["kwId", "outbound", "inbound", "orphanRisk", "clicksFromTop"],
+  "additionalProperties": false,
+  "properties": {
+    "kwId": { "type": "string" },
+    "outbound": {
+      "type": "array",
+      "minItems": 0,
+      "maxItems": 5,
+      "items": {
+        "type": "object",
+        "required": ["anchorText", "targetUrl", "insertAfterHeading", "rationale"],
+        "properties": {
+          "anchorText": { "type": "string", "not": { "enum": ["こちら", "この記事", "詳細"] } },
+          "targetUrl": { "type": "string", "pattern": "^/" },
+          "insertAfterHeading": { "type": "string" },
+          "rationale": { "type": "string" },
+          "dependsOnBatchArticle": { "type": "string", "description": "同バッチ記事へのリンクの場合、その kwId(公開順制約)" }
+        }
+      }
+    },
+    "inbound": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["sourceUrl", "anchorText", "insertLocationHint", "rationale"],
+        "properties": {
+          "sourceUrl": { "type": "string" },
+          "anchorText": { "type": "string" },
+          "insertLocationHint": { "type": "string" },
+          "rationale": { "type": "string" }
+        }
+      }
+    },
+    "orphanRisk": { "type": "boolean", "description": "inbound 0本なら必ず true(publish-manager が blocked にする)" },
+    "clicksFromTop": { "type": "integer", "minimum": 1, "maximum": 4 }
+  }
+}

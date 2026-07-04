@@ -4,13 +4,25 @@
 
 ## 現在地
 
-**設計フェーズ完了・実装未着手。** サイト本体(Nuxt 3)はまだこのディレクトリに存在しない。
+**設計フェーズ完了・Nuxt 3 基盤構築済み(実装#1 完了、2026-07-04)。** サイト名「マモリビ」/ `mamoribi.jp`(設計書03章 §1 で決定済み)。記事・過去問データは未投入。
 
 | ディレクトリ | 内容 |
 | --- | --- |
 | `docs/kaigo-media-plan/` | 完全設計書13章(戦略・キーワード・情報設計・E-E-A-T・技術・データ・CV・KPI・仮説台帳・実装順・レビューログ)。**すべての意思決定の上位規範** |
 | `docs/session-log-*.md` | セッション記録・引き継ぎ |
 | `ai-company/` | 記事量産の9-Agentパイプライン(Claude Code サブエージェント+Workflow)。「記事をN件追加して」で稼働 |
+| `config/` | サイト定数(`site.ts` — サイト名・URLの唯一の参照点)/ URL規則(`routes.ts` — クラスタ・予約語) |
+| `types/` | 設計書06章のスキーマ(過去問・給料統計・執筆者・アフィリエイト) |
+| `data/` | データ駆動ページの源泉(TS/JSON)。現在はマスタ骨格のみ |
+| `content/` | 記事 Markdown 置き場(配置ルール = `content/README.md`。Nuxt Content 導入は実装#3) |
+
+### 開発コマンド(このディレクトリ内で実行)
+
+```bash
+npm run dev        # 開発サーバー
+npm run typecheck  # 型チェック(vue-tsc)
+npm run build      # Vercel preset ビルド
+```
 
 ## 最初に読むもの
 

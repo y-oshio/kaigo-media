@@ -1,0 +1,21 @@
+{
+  "name": "kaigo-media",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "typecheck": "nuxt typecheck",
+    "postinstall": "nuxt prepare"
+  },
+  "devDependencies": {
+    "@nuxtjs/tailwindcss": "^6.12.2",
+    "nuxt": "^3.13.2",
+    "typescript": "^5.6.3",
+    "vue": "^3.5.12",
+    "vue-router": "^4.4.5",
+    "vue-tsc": "^2.1.10"
+  }
+}

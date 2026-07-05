@@ -19,11 +19,12 @@ export default defineNuxtConfig({
     },
   },
   sitemap: {
-    // 記事URL(公開ゲート通過分のみ)は server/api/__sitemap__/urls.ts が返す
+    // 掲載URLの唯一の源泉は server/api/__sitemap__/urls.ts(P6=実装#7 で一本化)。
+    // pages/ からの自動収集は無効化する — 静的ページ(/kyuryo/ 等)が公開ゲートを
+    // 素通りして混入するのを防ぐため(exclude はカスタムソースにも効くので使えない)。
+    // 固定ページを増やしたら urls.ts の STATIC_PAGES に追加すること。
+    excludeAppSources: true,
     sources: ['/api/__sitemap__/urls'],
-    // noindex ページは載せない(05章 §3): 診断の質問フロー。
-    // 結果8ページは動的ルートのため元々自動収集されない(独自本文拡充で index 化するとき sources に追加)
-    exclude: ['/shindan/start', '/shindan/start/'],
   },
   app: {
     head: {

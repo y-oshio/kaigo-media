@@ -13,7 +13,7 @@ const trustLinks = [
 /** ハブ(未実装の間は準備中表示。実装され次第 to を設定) */
 const hubItems: { label: string; to: string | null }[] = [
   { label: '試験・学習', to: null },
-  { label: '給料データ', to: null },
+  { label: '給料データ', to: '/kyuryo/' },
   { label: '転職ガイド', to: null },
   { label: '介護タイプ診断', to: '/shindan/' },
 ]

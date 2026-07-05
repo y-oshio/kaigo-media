@@ -38,7 +38,14 @@ export const CLUSTER_CTA: Record<ContentCluster, ClusterCta | null> = {
   },
   // C6 職種図鑑: 主CTA=資格記事へ回遊(07章)— 記事が貯まるまで未設定
   shokushu: null,
-  kyuryo: null,
+  // C3 給料: ASP未契約の間は補助CTAの診断を暫定表示(P6承認条件8 — 求人CTAは契約まで出さない)
+  kyuryo: {
+    headline: '給料だけで選ばない。あなたに合う職場タイプを知る',
+    description:
+      '同じ介護職でも、施設タイプによって働き方や手当は変わります。15問・約3分の介護タイプ診断で、向いている職場の傾向を確認できます(無料・登録不要)。',
+    buttonLabel: '介護タイプ診断をはじめる',
+    to: { type: 'internal', path: '/shindan/' },
+  },
 }
 
 /**

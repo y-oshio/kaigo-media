@@ -4,11 +4,11 @@ import { SITE_NAME } from '~/config/site'
 /**
  * グローバルヘッダー(設計書03章 §5。項目は V2 21章のクラスタ構成)。
  * 未実装セクションはリンクにせず「準備中」表示(実装され次第 to を設定):
- * 試験・学習=/shiken/(P8) 給料=/kyuryo/(P6) 転職ガイド=/tenshoku/(記事が入り次第リンク化)
+ * 試験・学習=/shiken/(P8) 転職ガイド=/tenshoku/(記事が入り次第リンク化)
  */
 const navItems: { label: string; to: string | null; emphasis?: boolean }[] = [
   { label: '試験・学習', to: null },
-  { label: '給料', to: null },
+  { label: '給料', to: '/kyuryo/' },
   { label: '転職ガイド', to: null },
   { label: '診断', to: '/shindan/', emphasis: true },
 ]

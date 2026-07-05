@@ -68,3 +68,56 @@ export interface KbMeta {
   status: KbStatus
   note?: string
 }
+
+/* ------------------------------------------------------------------
+ * KB-1(V3 35章 — P6 と同時導入)のエンティティ型。
+ * L1 エンティティは slug = id・公開後変更禁止(31章 §1 参照規約)。
+ * A1 資格・A3 施設形態は消費者が2つ未満のため未導入(YAGNIゲート)。
+ * ------------------------------------------------------------------ */
+
+/** A4 都道府県マスタ(data/kb/prefectures.ts)。級地は保持しない(31章 §2 パネル K-02) */
+export interface Prefecture extends KbMeta {
+  slug: string // = id。'hokkaido' 等(URL・統計ジョインのキー。公開後変更禁止)
+  name: string // '北海道'
+  jisCode: string // JIS X 0401 都道府県コード '01'〜'47'
+  region: string // ハブの地方別グルーピング表示用('北海道' '東北' '関東' 等)
+}
+
+/** A2 職種マスタ最小版(data/kb/jobs.ts — 給料pSEOに必要な範囲のみ) */
+export interface JobRole extends KbMeta {
+  slug: string // = id。'kaigoshoku' 等
+  name: string // '介護職員(医療・福祉施設等)'
+  shortName: string // 見出し・パンくず用の短い呼称('介護職員' 等)
+  description: string // 業務範囲の要約(自分の言葉 — 逐語コピー禁止)
+  /** 統計表上の職種名との対応(調査ごとに名称が違うためジョイン辞書として保持) */
+  statLabels: { sourceId: string; label: string }[]
+}
+
+/**
+ * E7 pSEOページ群レジストリ(data/kb/pseo-registry.ts)。
+ * 結合式 J をコードではなくデータとして保持する(V3 34章 §1)。
+ * 25章の台帳と1:1。条件0(データ実在確認)の記録もここに残す。
+ */
+export interface PseoRegistryEntry extends KbMeta {
+  slug: string // = id。'kyuryo-pref-kaigoshoku' 等
+  ledgerRef: string // V2 25章 台帳の対応('V2-25 §1 #1' 等)
+  templateId: string // ページテンプレートの識別子('T5-pref-salary' 等)
+  urlPattern: string // '/kyuryo/pref/:prefSlug/' 等(公開後変更禁止)
+  datasets: KbDatasetId[] // 参照データセット
+  join: string // 結合式の宣言(人間可読。例 'A4 ⋈ C2(jobSlug=kaigoshoku, surveyYear=latest)')
+  /** シンコンテンツ公開ゲート(V2 25章 §4)の機械判定パラメータ */
+  gate: {
+    nullRateMax: number // 条件1: 主要数値フィールドの null 率がこれを超える組み合わせは生成しない
+    primaryFields: string[] // null 率の分母になる主要数値フィールド
+    uniqueBlockMinChars: number // 条件2: 編集部解説の最低文字数(400)
+    contextGuideLinksMin: number // 条件2: 関連ガイドへの文脈リンク本数(満たすまで noindex)
+  }
+}
+
+/** E2 更新カレンダー(data/update-calendar.ts — 公表予定→更新作業の台帳) */
+export interface UpdateCalendarEntry extends KbMeta {
+  title: string // '令和8年賃金構造基本統計調査(次回年次更新)' 等
+  expectedAt: string // 公表・施行の見込み時期 'YYYY-MM'
+  targetDatasets: KbDatasetId[] // 更新対象のKBデータセット
+  action: string // 何をするか(手順の要約・参照すべきスクリプト)
+}

@@ -14,7 +14,8 @@ useSeoMeta({
 const sections: { title: string; description: string; to?: string }[] = [
   {
     title: '介護職の給料データ',
-    description: '公的統計にもとづく都道府県別・資格別の給料情報(準備中)',
+    description: '賃金構造基本統計調査など公的統計にもとづく、都道府県別の介護職の給料情報',
+    to: '/kyuryo/',
   },
   {
     title: '試験・学習',

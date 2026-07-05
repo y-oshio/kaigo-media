@@ -4,20 +4,21 @@ import { SITE_NAME, SITE_DESCRIPTION } from '~/config/site'
 // トップはタイトル規則(%s|サイト名)を適用せず単独タイトルにする
 useHead({ titleTemplate: null })
 useSeoMeta({
-  title: `${SITE_NAME}|介護職の過去問・給料・転職情報メディア`,
+  title: `${SITE_NAME}|介護職の給料・試験・転職情報メディア`,
   description: SITE_DESCRIPTION,
-  ogTitle: `${SITE_NAME}|介護職の過去問・給料・転職情報メディア`,
+  ogTitle: `${SITE_NAME}|介護職の給料・試験・転職情報メディア`,
   ogDescription: SITE_DESCRIPTION,
 })
 
+// V2 21章の4層構成に対応(過去問は凍結中のため約束しない)
 const sections = [
-  {
-    title: '過去問演習',
-    description: '介護福祉士・ケアマネ試験の過去問を1問ずつ丁寧に解説(準備中)',
-  },
   {
     title: '介護職の給料データ',
     description: '公的統計にもとづく都道府県別・資格別の給料情報(準備中)',
+  },
+  {
+    title: '試験・学習',
+    description: '介護福祉士・ケアマネ試験の日程・合格点データとオリジナル練習問題(準備中)',
   },
   {
     title: '転職・キャリアガイド',
@@ -25,7 +26,7 @@ const sections = [
   },
   {
     title: '介護タイプ診断',
-    description: 'あなたに合う施設タイプ・働き方がわかる15問診断(準備中)',
+    description: 'あなたに合う施設タイプ・働き方がわかる診断(準備中)',
   },
 ]
 </script>

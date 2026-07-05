@@ -19,10 +19,22 @@ interface KbMeta {
 }
 ```
 
-- **バージョン管理(全データセット共通)**: 履歴の唯一の保管庫は **git**。加えて (a) データセットごとに `schemaVersion` をファイル先頭で宣言、(b) 統計系は**上書きせず年度キーで追加**(V1 06章 SalaryStat の複合キー方式を一般化)、(c) 制度系は `validFrom`/`validUntil` で新旧を並存(旧レコードを消さない=タイムライン成果物の源泉)、(d) エンティティ系は上書き更新(履歴はgitで十分)。ID は全データセットで不変・再利用禁止。
+- **バージョン管理(全データセット共通)**: 履歴の唯一の保管庫は **git**。加えて (a) データセットごとに `schemaVersion` をファイル先頭で宣言(**破壊的変更は移行スクリプトを同一コミットに含めることを必須**とし、kb-lint が宣言と Zod の対応を検証 — 32章 §4)、(b) 統計系は**上書きせず年度キーで追加**(V1 06章 SalaryStat の複合キー方式を一般化)、(c) 制度系は `validFrom`/`validUntil` で新旧を並存(旧レコードを消さない=タイムライン成果物の源泉)、(d) エンティティ系は上書き更新(履歴はgitで十分)。ID は全データセットで不変・再利用禁止。
+- **ID規約(パネル D-02)**: 統計系など複合キーを持つデータセットの `id` は**複合キーからの決定的導出**で機械生成する(例: C2 は `c2-<sourceId>-<prefSlug ?? 'all'>-<jobSlug ?? 'all'>-<surveyYear>`)。導出規則自体を schemaVersion の管理対象とし、kb-lint に一意性検査を置く。
+- **参照規約(パネル D-03)**: レコード間参照は**常に `{ dataset, id }`(または id 文字列)**で行い、slug 参照は禁止する。**L1 エンティティ(A1〜A4・A6)は `slug = id` と宣言して公開後変更禁止**(URL規則「公開後不変」— V1 03章 — と一体化。変更が必要な場合は新レコード+リダイレクト)。本章 §3 のフィールド名は `related*Ids` 系として読む。
+- **TS/JSON の使い分け(パネル D-05)**: **AI・機械が起案/更新するデータセット(B・C・D1・D2・D5・E5)は JSON**(kb-diff の機械適用が前提)、**人間のみが編集する小型マスタ(A1〜A6・E2・E4・E6)は TS**(型補完の利益優先)。どちらも「純データ」規約(§6-3)に従う。
+- **既存型の KbMeta 適合方針(パネル D-01 — KB-0 の必須作業)**: 既存スキーマは無修正で extends できない箇所があるため、以下の移行表に従う(実装は KB-0 でコード変更として提案・承認後に実施):
+
+| 既存 | 衝突 | 適合方針 |
+| --- | --- | --- |
+| `KakomonQuestion.status`(fact-checked/reviewed/excluded 等) | KbMeta.status と enum 非互換 | ドメイン固有の工程状態は **`workflowStatus`** に改名して並存(KbMeta.status はライフサイクル専用)。対応: excluded→archived、reviewed/published→published |
+| `ExamRound.sourceUrl`(生URL) | sourceIds(ID参照)と方式不一致 | 試験センターの発表ページを C1/D4 に起票し、`sourceIds` 参照へ書き換え(KB-0) |
+| `AffiliateLink.active: boolean` | status と状態二重管理 | `status`(published/archived)に吸収 |
+| `SalaryStat`(id なし・複合キー) | id 必須と矛盾 | 上記ID規約の決定的導出で `id` を付与 |
+
 - **型検証**: 全データセットに Zod スキーマ(または JSON Schema)を1:1で用意し、品質CI(32章 §4)で機械検証する。
 
-## 2. データセットカタログ(6ドメイン・26データセット)
+## 2. データセットカタログ(6ドメイン・27データセット)
 
 優先=導入Phase(35章)。責任表記: **収集**=誰が集めるか/**承認**=公開判断(YMYL系は人間必須)。
 
@@ -31,7 +43,7 @@ interface KbMeta {
 | A1 | 資格マスタ | 介護系資格の要件・ルート・費用相場 | `data/kb/qualifications.ts` | 制度改正時 | AI/人間 | 法令・試験センター・スクール公表 | KB-1 |
 | A2 | 職種マスタ | 職種の定義・業務範囲・必要資格 | `data/kb/jobs.ts` | 制度改正時 | AI/人間 | 法令・職業情報提供サイト | KB-1 |
 | A3 | 施設形態マスタ | 施設種別の法的根拠・人員配置・特徴 | `data/kb/facilities.ts` | 制度改正時 | AI/人間 | 介護保険法・老人福祉法・厚労省資料 | KB-1 |
-| A4 | 都道府県マスタ | 県コード・最低賃金・級地・介護職員数 | `data/kb/prefectures.ts` | 年次 | AI/人間 | JIS X 0401・厚労省・第9期計画 | KB-1 |
+| A4 | 都道府県マスタ | 県コード・最低賃金・介護職員数(第9期計画=**3年周期**)。**級地は保持しない**(地域区分は市町村単位の告示のため県1値では誤る — パネル K-02。必要になれば市町村×級地の別データセットとして YAGNI 判定) | `data/kb/prefectures.ts` | 最低賃金=年次(10月)/計画=3年毎 | AI/人間 | JIS X 0401・厚労省・第9期計画 | KB-1 |
 | A5 | 監修者・執筆者 | 資格・経歴・科目適性 | `data/authors.ts`(既存) | 随時 | 人間/人間 | 本人確認 | 済 |
 | A6 | 求人属性タクソノミ | 雇用形態・勤務形態・待遇属性の統一語彙 | `data/kb/employment-attrs.ts` | ほぼ不変 | 人間/人間 | 編集部定義(語彙統一用) | KB-3 |
 | B1 | 法令マスタ | 介護保険法等の条項参照・施行日 | `data/kb/laws.ts` | 改正時 | AI/人間 | e-Gov 法令検索 | KB-3 |
@@ -41,7 +53,7 @@ interface KbMeta {
 | C1 | 統計出典マスタ | 調査名・公表URL・定義注記・次回公表 | `data/kyuryo/sources.ts`(既存を昇格) | 公表毎 | AI/人間 | 各統計の公表ページ | 済 |
 | C2 | 給与統計 | 県×職種×施設×年度の給与値(null許容) | `data/kyuryo/*.json`(既存を拡張) | 年次 | AI/人間 | 賃金構造基本統計・処遇状況等調査 | KB-1 |
 | C3 | 労働統計 | 求人倍率(月次)・離職率・従事者数 | `data/kb/labor-stats.json` | 月次/年次 | AI/機械+人間 | 職業安定業務統計・介護労働実態調査 | KB-2 |
-| C4 | 試験統計 | 回次・合格点・合格率・受験者数 | `data/kakomon/exam-rounds.ts`(既存) | 年次(試験毎) | AI/人間 | 試験センター発表 | 済 |
+| C4 | 試験統計 | 回次・合格点・合格率・受験者数。**ケアマネは分野別2本の合格基準のため `sectionScores?: {section, passingScore, maxScore}[]` を許容する拡張が必要**(単一 `passingScore` では表現不可 — パネル K-05。実装は KB-0 のコード変更提案に含める) | `data/kakomon/exam-rounds.ts`(既存を拡張) | 年次(試験毎+**合格発表時**) | AI/人間 | 試験センター発表 | 済(拡張はKB-0) |
 | C5 | 税・社会保険料率 | 計算機の料率モデル(年度付き) | `data/tools/tax-model.ts`(V2 25章 T9) | 年次(4月) | AI/人間 | 協会けんぽ・国税庁・自治体 | KB-1 |
 | D1 | 用語集(略語含む) | 用語の自作定義・読み・略語↔正式名称 | `data/kb/glossary/*.json` | 随時蓄積 | AI/人間 | 法令・厚労省資料(定義の根拠) | KB-2 |
 | D2 | FAQ | 質問+自己完結の回答(出典つき) | `data/kb/faq/*.json` | 随時蓄積 | AI/人間 | KB内ファクト(F-1原則) | KB-2 |
@@ -55,6 +67,7 @@ interface KbMeta {
 | E4 | ASP案件マスタ | /go/ リンク・案件・報酬・LINE可否 | `data/affiliate-links.ts`(既存) | 提携毎 | 人間 | ASP管理画面 | 済 |
 | E5 | スクール・講座データ | 資格×県×講座の費用・形式(R-14対象) | `data/kb/school-courses.json` | 年2回以上 | AI/人間 | 各スクール公表(規約確認必須) | KB-3 |
 | E6 | 診断定義 | 8タイプ・質問・結果→施設/職種マップ | `data/kb/shindan.ts` | 随時 | 人間 | 編集部定義(既存移植 P7) | P7 |
+| E7 | pSEOページ群レジストリ | テンプレートID・URLパターン・参照データセット・結合キー・ゲート条件(=34章 §1 の結合式 J をデータとして保持) | `data/kb/pseo-registry.ts` | ページ群追加時 | 人間 | 編集部定義(25章台帳と1:1) | KB-1(P6と同時) |
 
 - **「求人属性(A6)」の位置づけ**: 求人DBは持たない(V2 21章で不参入決定・不変)。A6 は記事・診断・比較で使う**語彙の統一辞書**(「夜勤専従」「2交代」等の表記ゆれ防止+診断マッピングのキー)に限定する。
 - 既存データセット(A5/C1/C4/E1/E2/E4)は V1 06章で設計済み。V3 では KbMeta 適合と出典義務の強化のみ(35章 KB-0)。
@@ -82,9 +95,10 @@ interface Qualification extends KbMeta {
 
 /** A3 施設形態マスタ */
 interface FacilityType extends KbMeta {
-  slug: string               // 'tokuyo' 等
+  slug: string               // 'tokuyo' 等(= id。L1 は slug=id — §1 参照規約)
   name: string; aliases: string[]
-  lawBasis: string           // '介護保険法(介護老人福祉施設)' 等
+  lawRefs: string[]          // B1 参照(複数可 — 二法構造に対応: 特養=老人福祉法20条の5〔設置〕+介護保険法8条27項〔指定〕)
+  lawBasisLabel: string      // 表示用の短い根拠表記(平文はこちら)
   residentProfile: string    // 入居者像(要介護度・目的)
   staffing: { role: string; ratio: string; lawRef: string }[] // 人員配置基準(#57 の源泉。数値+根拠)
   nightShift: { typical: string; note: string }               // 夜勤体制(#56)
@@ -102,15 +116,21 @@ interface FacilityType extends KbMeta {
 ```ts
 /** B3 加算マスタ(処遇改善は本データセットの1系統) */
 interface Kasan extends KbMeta {
-  slug: string               // 'shoguu-kaizen' 等
+  slug: string               // 'shoguu-kaizen' 等(= id)
   name: string               // '介護職員等処遇改善加算'(現行名称 — V2 K-06)
   formerNames?: string[]     // 旧称(2024年6月一本化前の3加算)
-  rates: {                   // 率は「サービス種別×区分×年度」で履歴保持
-    serviceType: string; grade: string; rate: number;
-    validFrom: string; validUntil?: string; sourceId: string
-  }[]
   requirementsSummary: string  // 算定要件の要旨(逐語コピー禁止 — R-11)
   workerNote: string           // 働き手への影響(配分は事業所裁量 — V2 K-06 の注意を型で保持)
+}
+
+/** B3b 加算の値レコード(親 Kasan の子。率・年度の行を独立レコード化 — 肥大防止とRAGチャンク単位のため。パネル D-06/K-03) */
+interface KasanRate extends KbMeta {
+  kasanId: string            // 親参照
+  serviceType: string; grade?: string
+  valueType: 'percent' | 'unitsPerDay' | 'unitsPerMonth' | 'unitsPerUse'
+  // ↑ 加算は率型(処遇改善系等)だけでなく単位数型(夜勤職員配置加算=単位/日 等)が多数 — パネル K-03
+  value: number
+  // validFrom / validUntil / sourceIds は KbMeta 側で保持(改定で旧行を閉じ、新行を追加)
 }
 
 /** B4 制度改正イベント(タイムライン成果物・更新カレンダーの源泉) */
@@ -150,8 +170,14 @@ interface FaqItem extends KbMeta {
   answer: string             // 200〜400字・自己完結・KB内ファクトのみで構成(F-1)
   clusterSlug?: string; entityRefs: { dataset: string; id: string }[]
   jsonLdEligible: boolean    // FAQPage 出力可否(ページ側の重複出力を防ぐ台帳)
-  usedOnUrls?: string[]      // ビルド時に逆引き生成(34章 §4)
+  primaryUrl?: string        // 全文を掲載する主ページ(1箇所のみ)
+  // 使用URL一覧はレコードに持たない — 逆引きインデックス(34章 §4。ビルド生成物)に一本化(パネル D-07)
 }
+```
+
+- **FAQ の重複防止(パネル S-05)**: 1つのFAQの**全文埋め込みは `primaryUrl` の1ページのみ**。他ページは要約1文+リンクとする(自己完結文はどのページでも一字一句同じになり、ページ間本文重複CIに抵触するため)。JSON-LD だけでなく可視テキストも対象。kb-lint で全文出現回数を検査する。
+
+```ts
 ```
 
 - **D1/D2 の更新頻度/責任**: 記事・ドリル制作の副産物として随時蓄積(AI起案→人間承認)。制度改定時は参照 lawRefs で影響検索。
@@ -164,13 +190,17 @@ interface FaqItem extends KbMeta {
 
 ```ts
 /** E3 エンティティ関係グラフ(internal-link-map.ts を置換・拡張) */
-interface EntityRelation {
+interface EntityRelation extends KbMeta {   // 関係にも承認・鮮度・欠番運用を適用(パネル D-04)
   from: { dataset: string; id: string }
   to: { dataset: string; id: string }
   relation: 'requires' | 'leads-to' | 'works-at' | 'compares-with' | 'explains' | 'related'
   // 例: 初任者研修 -requires→ なし / 初任者 -leads-to→ 実務者 / 介護職員 -works-at→ 特養
   weight?: number            // 内部リンク優先度(34章 §3)
 }
+// 方向規約: relation ごとに directed / symmetric を宣言する
+//   directed: requires, leads-to, works-at, explains(逆方向リンクはビルド時に自動導出 — 手で逆向きレコードを作らない)
+//   symmetric: compares-with, related(1レコードで両方向を表す)
+// 参照先が archived になった関係は kb-lint が自動で stale に落とす(published レコードから archived への参照はビルド失敗 — 32章 §4)
 ```
 
 - **E3 の AI利用方法**: 内部リンク自動導出(34章 §3)・比較表のペア選定・診断結果→コンテンツのマッピング・「関連記事」の一貫性。手書きの対応表(V1 06章 internal-link-map)は本グラフからの導出に置換する。
@@ -198,11 +228,15 @@ interface EntityRelation {
 
 将来の AIチャット・サイト内検索・レコメンド・質問応答は、KBを以下の規約で作ってあれば**後付けできる**(作り直し不要):
 
-1. **1レコード=1つの自己完結した知識単位**: 単体で読んで意味が通る(代名詞・文脈依存の表現を定義文に使わない)。長い知識は §単位に分割(用語=1語1レコード、FAQ=1問1レコード、加算=1加算1レコード+率は年度行)。**目安1レコード500トークン以内** — これがそのままRAGのチャンクになる。
+1. **1レコード=1つの自己完結した知識単位**: 単体で読んで意味が通る(代名詞・文脈依存の表現を定義文に使わない)。長い知識は分割する(用語=1語1レコード、FAQ=1問1レコード、加算=Kasan+KasanRate 子レコード — §3 B)。**目安1レコード500トークン以内。ただしデータセット別に適用を宣言する**(パネル D-06): D1/D2/B系=500トークン規約を適用/**D3(ドリル問題)は適用除外**(1問=1チャンクとし、超過分は explanation のフィールド単位で副チャンク化する — 問題の分割は学習体験を壊すため)/C系統計=1行レコードで元々小さい。
 2. **全レコードが安定ID+出典+時間軸を持つ**(KbMeta): 回答の出典明示(グラウンディング)・鮮度フィルタ(`validUntil` が閉じた制度を答えない)・引用リンク生成が構造だけで可能になる。
-3. **純データであること**: KBファイルは関数・クラス・環境依存値を含まない(TS定数も JSON.stringify 可能な値のみ)。ビルド時に **`kb-export`(全KBを JSONL 1行1レコード+メタで書き出すスクリプト)** を将来追加すれば、そのままベクトルDB・埋め込みの入力になる。エクスポート形式だけ予約する:
+3. **純データであること**: KBファイルは関数・クラス・環境依存値を含まない(TS定数も JSON.stringify 可能な値のみ)。ビルド時に **`kb-export`(全KBを JSONL 1行1レコード+メタで書き出すスクリプト)** を将来追加すれば、そのままベクトルDB・埋め込みの入力になる。エクスポート形式だけ予約する(パネル D-07 反映版):
    ```jsonc
-   {"id":"glossary-tokuyo","dataset":"D1","text":"特養(介護老人福祉施設)とは…","meta":{"sourceIds":[],"checkedAt":"2026-07-05","url":"/glossary/#tokuyo"}}
+   {"id":"glossary-tokuyo","dataset":"D1",
+    "text":"特養(介護老人福祉施設)とは…",   // データセット別の text 射影テンプレート(構造化フィールド→文章化の規則)を kb-export 側に持つ(予約項目)
+    "meta":{"sourceIds":[],"checkedAt":"2026-07-05","updatedAt":"2026-07-05",   // updatedAt(または contentHash)= 将来の埋め込み再生成の差分トリガー
+            "urls":["/kyuryo/guide/tokuyo-kyuryo/","/shisetsu/tokuyo/"],        // 掲載URL群(逆引きインデックス — 34章 §4 — から注入。KBレコード自体は持たない)
+            "canonicalUrl":"/shisetsu/tokuyo/"}}                                 // 引用リンク先(逆引き weight 最上位。なければ null)
    ```
 4. **エンティティ参照はIDで**(E3 グラフ): 将来のレコメンド(「この資格を見た人向けの論点・記事」)はグラフ探索で実装できる。
 - **やらないこと(明記)**: ベクトルDB・埋め込み生成・チャットUI・検索API はすべて実装しない。KB-4(35章)の再評価事項。

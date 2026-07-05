@@ -36,4 +36,40 @@
   .container-page {
     @apply mx-auto w-full max-w-5xl px-4;
   }
+
+  /* 記事本文(Nuxt Content の ContentRenderer 出力に適用 — T6 テンプレート) */
+  .article-body {
+    @apply mt-8 leading-relaxed text-gray-800;
+  }
+  .article-body h2 {
+    @apply mt-10 border-l-4 border-brand-600 pl-3 text-xl font-bold;
+  }
+  .article-body h3 {
+    @apply mt-8 text-lg font-bold;
+  }
+  .article-body p {
+    @apply mt-4;
+  }
+  .article-body ul {
+    @apply mt-4 list-disc space-y-1 pl-6;
+  }
+  .article-body ol {
+    @apply mt-4 list-decimal space-y-1 pl-6;
+  }
+  .article-body a {
+    @apply text-brand-700 underline underline-offset-2;
+  }
+  .article-body table {
+    @apply mt-4 w-full border-collapse text-sm;
+  }
+  .article-body th,
+  .article-body td {
+    @apply border border-gray-200 px-3 py-2 text-left;
+  }
+  .article-body th {
+    @apply bg-gray-50 font-bold;
+  }
+  .article-body blockquote {
+    @apply mt-4 border-l-4 border-gray-200 pl-4 text-gray-600;
+  }
 }

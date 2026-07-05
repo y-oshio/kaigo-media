@@ -1,0 +1,7 @@
+# mamoribi.jp
+# /go/ はアフィリエイトリダイレクタの予約領域(実装#5=P4 で導入)。
+# 実装前から Disallow を宣言しておく(07章・P3承認条件6)。
+User-agent: *
+Disallow: /go/
+
+Sitemap: https://mamoribi.jp/sitemap.xml

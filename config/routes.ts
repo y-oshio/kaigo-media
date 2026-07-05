@@ -18,6 +18,26 @@ export const CONTENT_CLUSTERS = [
 export type ContentCluster = (typeof CONTENT_CLUSTERS)[number]
 
 /**
+ * クラスタの表示名と記事URLの基底パス(03章 §2)。
+ * kyuryo のみ記事は /kyuryo/guide/ 配下に出る(/kyuryo/ 直下は給料pSEOの予約 — P6)。
+ */
+export const CLUSTER_META: Record<
+  ContentCluster,
+  { label: string; articleBase: string; indexPath: string }
+> = {
+  shikaku: { label: '資格・研修', articleBase: '/shikaku/', indexPath: '/shikaku/' },
+  tenshoku: { label: '転職・キャリア', articleBase: '/tenshoku/', indexPath: '/tenshoku/' },
+  shisetsu: { label: '施設種別ガイド', articleBase: '/shisetsu/', indexPath: '/shisetsu/' },
+  shokushu: { label: '職種図鑑', articleBase: '/shokushu/', indexPath: '/shokushu/' },
+  kyuryo: { label: '給料ガイド', articleBase: '/kyuryo/guide/', indexPath: '/kyuryo/guide/' },
+}
+
+/** 記事URL(正規形・末尾スラッシュ)を組み立てる。content の _path とは別物な点に注意 */
+export function articlePath(cluster: ContentCluster, slug: string): string {
+  return `${CLUSTER_META[cluster].articleBase}${slug}/`
+}
+
+/**
  * 予約語スラッグ — データ駆動ページとの衝突を防ぐため、
  * 記事スラッグには使用禁止(全クラスタ共通。設計書03章 §2 + V2 26章 §3)。
  */

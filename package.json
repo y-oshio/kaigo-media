@@ -8,6 +8,7 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "typecheck": "nuxt typecheck",
+    "kb-lint": "node scripts/kb-lint.mjs",
     "postinstall": "nuxt prepare"
   },
   "devDependencies": {

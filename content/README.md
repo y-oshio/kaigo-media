@@ -21,7 +21,7 @@
 1. **スラッグ**: 全て小文字ローマ字(ヘボン式)`[a-z0-9-]+`。予約語(`config/routes.ts` の `RESERVED_SLUGS`)は使用禁止。一度公開したURLは変更しない。
 2. **frontmatter**: `types/article.ts` の `ArticleFrontmatter` に従う(title / description / cluster / targetQueries / authorId / supervisorId / reviewedAt / publishedAt / updatedAt / sources / prRelated)。
 3. **公開ゲート**: `sources` が1件以上・全件に `checkedAt`(確認日)がない記事は**公開されない**(ページ側で404 — `utils/article.ts`)。`npm run content-lint` で理由を確認できる。
-4. **PR表記**: アフィリエイト・広告リンクを含む記事は `prRelated: true` にする。本文冒頭にPR表記が自動表示される(07章)。
+4. **PR表記**: アフィリエイト・広告リンクを含む記事は `prRelated: true` にする。本文冒頭にPR表記が自動表示される(07章)。本文に `/go/` リンクがあるのに `prRelated: true` でない記事は content-lint がNGにする。`/go/` リンクの `rel="sponsored nofollow"` は ProseA が自動付与するので本文には普通のMarkdownリンクで書けばよい(ただし `data/affiliate-links.ts` に登録済みの slug のみ — 未登録は404)。
 5. **執筆・監修**: `authorId` / `supervisorId` は `data/authors.ts` の実在登録の id のみ。未設定・未登録の間は「準備中」表示になる。**架空の人物を作らない**(04章)。監修必須クラスタの機械チェックは品質CI(実装#6=P5)。
 6. **サンプル・仮記事の禁止**: 架空の統計値・仮の記事をコミットしない。検証用の一時記事はコミット前に必ず削除する。
 7. **孤立ページ禁止**: 記事公開時に既存記事から必ず1本以上のリンクを受ける(03章 §3)。

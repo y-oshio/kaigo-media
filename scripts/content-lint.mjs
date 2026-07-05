@@ -9,6 +9,7 @@
  *   3. cluster が配置ディレクトリと一致していること
  *   4. スラッグ規則: 小文字ローマ字 [a-z0-9-]+、予約語(config/routes.ts RESERVED_SLUGS)禁止
  *   5. 日付形式(publishedAt / updatedAt / reviewedAt / checkedAt = YYYY-MM-DD)
+ *   6. 本文に /go/ リンク(アフィリエイト)を含む記事は prRelated: true 必須(ステマ規制ガード — 07章)
  *
  * ページ側ゲートは違反記事を404にする(公開されない)。このスクリプトは
  * 「なぜ公開されないか」をビルド前に人間へ知らせるためのもの。
@@ -88,6 +89,13 @@ function lintArticle(file, cluster) {
 
   if (fm?.prRelated !== undefined && typeof fm.prRelated !== 'boolean') {
     errors.push(`${rel}: prRelated は true / false のみ`)
+  }
+
+  // 本文に /go/ リンクがあるのに prRelated: true でない記事はPR表記が出ないまま広告を含むことになる
+  const body = raw.slice(match[0].length)
+  const hasGoLink = /\]\(\/go\/|href="\/go\/|https?:\/\/mamoribi\.jp\/go\//.test(body)
+  if (hasGoLink && fm?.prRelated !== true) {
+    errors.push(`${rel}: 本文に /go/ リンクがあるため prRelated: true が必須です(PR表記の自動表示 — 07章)`)
   }
 }
 

@@ -21,6 +21,9 @@ export default defineNuxtConfig({
   sitemap: {
     // 記事URL(公開ゲート通過分のみ)は server/api/__sitemap__/urls.ts が返す
     sources: ['/api/__sitemap__/urls'],
+    // noindex ページは載せない(05章 §3): 診断の質問フロー。
+    // 結果8ページは動的ルートのため元々自動収集されない(独自本文拡充で index 化するとき sources に追加)
+    exclude: ['/shindan/start', '/shindan/start/'],
   },
   app: {
     head: {

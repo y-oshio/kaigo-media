@@ -4,13 +4,13 @@ import { SITE_NAME } from '~/config/site'
 /**
  * グローバルヘッダー(設計書03章 §5。項目は V2 21章のクラスタ構成)。
  * 未実装セクションはリンクにせず「準備中」表示(実装され次第 to を設定):
- * 試験・学習=/shiken/(P8) 給料=/kyuryo/(P6) 転職ガイド=/tenshoku/(P3) 診断=/shindan/(P7・aff-v1移植)
+ * 試験・学習=/shiken/(P8) 給料=/kyuryo/(P6) 転職ガイド=/tenshoku/(記事が入り次第リンク化)
  */
 const navItems: { label: string; to: string | null; emphasis?: boolean }[] = [
   { label: '試験・学習', to: null },
   { label: '給料', to: null },
   { label: '転職ガイド', to: null },
-  { label: '診断', to: null, emphasis: true },
+  { label: '診断', to: '/shindan/', emphasis: true },
 ]
 
 const menuOpen = ref(false)
@@ -24,7 +24,14 @@ const menuOpen = ref(false)
       <!-- PC ナビ -->
       <nav class="hidden items-center gap-1 sm:flex" aria-label="グローバルナビゲーション">
         <template v-for="item in navItems" :key="item.label">
-          <NuxtLink v-if="item.to" :to="item.to" class="btn-ghost">{{ item.label }}</NuxtLink>
+          <NuxtLink
+            v-if="item.to"
+            :to="item.to"
+            class="btn-ghost"
+            :class="item.emphasis ? 'font-bold text-brand-700' : ''"
+          >
+            {{ item.label }}
+          </NuxtLink>
           <span
             v-else
             class="inline-flex items-center gap-1 px-3 py-2 text-sm text-gray-400"

@@ -20,10 +20,30 @@ export interface ClusterCta {
 }
 
 export const CLUSTER_CTA: Record<ContentCluster, ClusterCta | null> = {
-  // 診断(/shindan/)は aff-v1 から移植後に internal CTA を設定する(P7)
+  // C2 資格: 主CTA=かいご畑・講座資料請求(07章)— ASP未契約のため未設定
   shikaku: null,
-  tenshoku: null,
-  shisetsu: null,
+  // C4 悩み・転職: 主CTA=エージェント直(07章)— ASP未契約の間は補助CTAの診断を暫定表示
+  tenshoku: {
+    headline: 'あなたに合う施設タイプがわかる「介護タイプ診断」',
+    description: '15問・約3分。8タイプから、向いている職場の特徴と転職先選びの目安がわかります(無料・登録不要)。',
+    buttonLabel: '介護タイプ診断をはじめる',
+    to: { type: 'internal', path: '/shindan/' },
+  },
+  // C5 施設種別: 主CTA=診断(07章「あなたはどの施設向き?」で自分事化)
+  shisetsu: {
+    headline: 'この施設タイプ、あなたに合っている?',
+    description: '15問・約3分の介護タイプ診断で、8タイプから向いている職場の傾向を確認できます(無料・登録不要)。',
+    buttonLabel: '介護タイプ診断で確かめる',
+    to: { type: 'internal', path: '/shindan/' },
+  },
+  // C6 職種図鑑: 主CTA=資格記事へ回遊(07章)— 記事が貯まるまで未設定
   shokushu: null,
   kyuryo: null,
 }
+
+/**
+ * 診断結果ページの求人CTAに使う案件 slug(07章 — aff-v1 では MC介護 = 'mc')。
+ * A8.net 側で mamoribi.jp の媒体登録が完了し、data/affiliate-links.ts に実URLが
+ * 登録されるまで、結果ページの求人CTAブロックは非表示になる(P7承認条件1)。
+ */
+export const SHINDAN_RESULT_OFFER_SLUG = 'mc'

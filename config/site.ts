@@ -18,3 +18,10 @@ export const TITLE_TEMPLATE = `%s|${SITE_NAME}`
 
 /** ブランドカラー(仮 — ブランドデザイン確定後に tailwind.config.ts と同時に差し替え) */
 export const THEME_COLOR = '#16a34a'
+
+/**
+ * LINE公式アカウントの友だち追加URL(07章 — 診断結果・記事からのナーチャリング導線)。
+ * aff-v1-kaigo-shindan から引き継いだ実在アカウント(2026-07-05 ユーザー承認)。
+ * 空文字にすると LineCta は全ページで非表示になる。
+ */
+export const LINE_ADD_URL = 'https://lin.ee/YV0F2dA'

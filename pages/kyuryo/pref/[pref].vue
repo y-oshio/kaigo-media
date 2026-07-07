@@ -2,7 +2,6 @@
 import { findPrefecture } from '~/data/kb/prefectures'
 import { SITE_NAME, SITE_URL } from '~/config/site'
 import { articlePath } from '~/config/routes'
-import type { ArticleDocument } from '~/utils/article'
 
 /**
  * T5 都道府県×介護職の給料ページ(E7: kyuryo-pref-kaigoshoku / V2 25章 §1 #1)。
@@ -44,9 +43,10 @@ const explanation = prefSalaryExplanation({
 
 // 関連ガイド(公開ゲート通過済みの給料ガイド記事)。ゲート本数未満の間は noindex
 const { data: guides } = await useAsyncData(`kyuryo-guides-${prefSlug}`, async () => {
-  const all = await queryContent<ArticleDocument>('/kyuryo')
-    .only(['_path', 'title', 'description', 'cluster', 'publishedAt', 'sources'])
-    .find()
+  const all = await queryCollection('articles')
+    .where('path', 'LIKE', '/kyuryo/%')
+    .select('path', 'title', 'description', 'cluster', 'publishedAt', 'sources')
+    .all()
   return all
     .filter((doc) => doc.cluster === 'kyuryo' && isPublishable(doc))
     .sort((a, b) => (a.publishedAt < b.publishedAt ? 1 : -1))
@@ -210,9 +210,9 @@ const detailRows = computed(() => {
     <section v-if="guideList.length" class="mt-10" aria-label="関連ガイド">
       <h2 class="border-l-4 border-brand-600 pl-3 text-xl font-bold">あわせて読みたい給料ガイド</h2>
       <ul class="mt-4 space-y-2">
-        <li v-for="doc in guideList" :key="doc._path">
+        <li v-for="doc in guideList" :key="doc.path">
           <NuxtLink
-            :to="articlePath('kyuryo', String(doc._path).split('/').pop() ?? '')"
+            :to="articlePath('kyuryo', String(doc.path).split('/').pop() ?? '')"
             class="text-brand-700 underline-offset-2 hover:underline"
           >
             {{ doc.title }}

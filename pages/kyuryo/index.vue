@@ -2,7 +2,6 @@
 import { PREF_REGIONS } from '~/data/kb/prefectures'
 import { SITE_URL } from '~/config/site'
 import { articlePath } from '~/config/routes'
-import type { ArticleDocument } from '~/utils/article'
 
 /**
  * 給料データハブ /kyuryo/(03章 §2 — /kyuryo/ 直下は給料pSEO)。
@@ -24,9 +23,10 @@ const prefByRegion = computed(() =>
 )
 
 const { data: guides } = await useAsyncData('kyuryo-hub-guides', async () => {
-  const all = await queryContent<ArticleDocument>('/kyuryo')
-    .only(['_path', 'title', 'description', 'cluster', 'publishedAt', 'sources'])
-    .find()
+  const all = await queryCollection('articles')
+    .where('path', 'LIKE', '/kyuryo/%')
+    .select('path', 'title', 'description', 'cluster', 'publishedAt', 'sources')
+    .all()
   return all
     .filter((doc) => doc.cluster === 'kyuryo' && isPublishable(doc))
     .sort((a, b) => (a.publishedAt < b.publishedAt ? 1 : -1))
@@ -133,8 +133,8 @@ useHead({ link: [{ rel: 'canonical', href: canonicalUrl }] })
       <h2 class="border-l-4 border-brand-600 pl-3 text-xl font-bold">給料ガイド(解説記事)</h2>
       <template v-if="guideList.length">
         <ul class="mt-4 grid gap-4 sm:grid-cols-2">
-          <li v-for="doc in guideList" :key="doc._path" class="card">
-            <NuxtLink :to="articlePath('kyuryo', String(doc._path).split('/').pop() ?? '')" class="block">
+          <li v-for="doc in guideList" :key="doc.path" class="card">
+            <NuxtLink :to="articlePath('kyuryo', String(doc.path).split('/').pop() ?? '')" class="block">
               <h3 class="font-bold text-brand-700 underline-offset-2 hover:underline">{{ doc.title }}</h3>
               <p class="mt-2 text-sm text-gray-600">{{ doc.description }}</p>
             </NuxtLink>

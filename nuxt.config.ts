@@ -14,7 +14,9 @@ export default defineNuxtConfig({
   },
   content: {
     // 日本語見出しへのアンカーリンク自動付与は使わない(見た目のノイズ回避。TOC は ArticleToc で表示)
-    markdown: {
+    // v3では content.build.markdown.anchorLinks ではなく content.renderer.anchorLinks に移動している
+    // (47章はbuild.markdown配下への移動と記載していたが、実際の型定義で誤りと判明・修正)
+    renderer: {
       anchorLinks: false,
     },
   },

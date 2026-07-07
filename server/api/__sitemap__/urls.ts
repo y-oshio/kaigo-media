@@ -1,9 +1,8 @@
 import { defineEventHandler } from 'h3'
-import { serverQueryContent } from '#content/server'
+import { queryCollection } from '@nuxt/content/server'
 import { CLUSTER_META, articlePath } from '~~/config/routes'
 import type { ContentCluster } from '~~/config/routes'
 import { publishBlockers } from '~~/utils/article'
-import type { ArticleDocument } from '~~/utils/article'
 import {
   PREF_SALARY_REGISTRY,
   getSalaryStat,
@@ -34,14 +33,14 @@ const STATIC_PAGES = [
 ]
 
 export default defineEventHandler(async (event) => {
-  const docs = await serverQueryContent<ArticleDocument>(event)
-    .only(['_path', 'title', 'description', 'cluster', 'publishedAt', 'updatedAt', 'sources'])
-    .find()
+  const docs = await queryCollection(event, 'articles')
+    .select('path', 'title', 'description', 'cluster', 'publishedAt', 'updatedAt', 'sources')
+    .all()
 
   // content/<cluster>/<slug>.md 以外(README 等)は対象外
   const published = docs.filter(
     (doc) =>
-      /^\/[a-z]+\/[a-z0-9-]+$/.test(String(doc._path ?? '')) &&
+      /^\/[a-z]+\/[a-z0-9-]+$/.test(String(doc.path ?? '')) &&
       typeof doc.cluster === 'string' &&
       doc.cluster in CLUSTER_META &&
       publishBlockers(doc).length === 0,
@@ -50,7 +49,7 @@ export default defineEventHandler(async (event) => {
   const urls: { loc: string; lastmod?: string }[] = STATIC_PAGES.map((loc) => ({ loc }))
 
   urls.push(...published.map((doc) => {
-    const slug = String(doc._path).split('/').pop() as string
+    const slug = String(doc.path).split('/').pop() as string
     return {
       loc: articlePath(doc.cluster as ContentCluster, slug),
       lastmod: doc.updatedAt ?? doc.publishedAt,

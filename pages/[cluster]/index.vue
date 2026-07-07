@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { CONTENT_CLUSTERS, CLUSTER_META, articlePath } from '~/config/routes'
 import type { ContentCluster } from '~/config/routes'
-import type { ArticleDocument } from '~/utils/article'
 
 /**
  * クラスタ一覧ページ /<cluster>/(shikaku / tenshoku / shisetsu / shokushu)。
@@ -21,9 +20,10 @@ const meta = CLUSTER_META[cluster]
 
 // 公開ゲートは useAsyncData 内で通す(未公開記事の情報を payload に載せないため)
 const { data: docs } = await useAsyncData(`articles-${cluster}`, async () => {
-  const all = await queryContent<ArticleDocument>(`/${cluster}`)
-    .only(['_path', 'title', 'description', 'cluster', 'publishedAt', 'updatedAt', 'sources'])
-    .find()
+  const all = await queryCollection('articles')
+    .where('path', 'LIKE', `/${cluster}/%`)
+    .select('path', 'title', 'description', 'cluster', 'publishedAt', 'updatedAt', 'sources')
+    .all()
   return all
     .filter((doc) => doc.cluster === cluster && isPublishable(doc))
     .sort((a, b) => (a.publishedAt < b.publishedAt ? 1 : -1))
@@ -31,7 +31,7 @@ const { data: docs } = await useAsyncData(`articles-${cluster}`, async () => {
 
 const articles = computed(() => docs.value ?? [])
 
-const slugOf = (doc: { _path?: string }) => String(doc._path ?? '').split('/').pop() ?? ''
+const slugOf = (doc: { path?: string }) => String(doc.path ?? '').split('/').pop() ?? ''
 
 useSeoMeta({
   title: meta.label,
@@ -46,7 +46,7 @@ useSeoMeta({
 
     <template v-if="articles.length">
       <ul class="mt-8 grid gap-4 sm:grid-cols-2">
-        <li v-for="doc in articles" :key="doc._path" class="card">
+        <li v-for="doc in articles" :key="doc.path" class="card">
           <NuxtLink :to="articlePath(cluster, slugOf(doc))" class="block">
             <h2 class="font-bold text-brand-700 underline-offset-2 hover:underline">{{ doc.title }}</h2>
             <p class="mt-2 text-sm text-gray-600">{{ doc.description }}</p>

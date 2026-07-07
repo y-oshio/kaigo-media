@@ -1,8 +1,7 @@
-import type { ParsedContent } from '@nuxt/content'
-import type { ArticleFrontmatter } from '~/types/article'
+import type { ArticlesCollectionItem } from '@nuxt/content'
 
-/** Nuxt Content が返す記事ドキュメント(本文AST + frontmatter) */
-export type ArticleDocument = ParsedContent & ArticleFrontmatter
+/** Nuxt Content(v3)が返す記事ドキュメント(content.config.ts の articles collection schema 由来の型) */
+export type ArticleDocument = ArticlesCollectionItem
 
 /**
  * 公開ゲート(V2 26章 誠実性原則+P3承認条件)。

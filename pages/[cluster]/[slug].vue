@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { CONTENT_CLUSTERS, RESERVED_SLUGS } from '~/config/routes'
-import type { ArticleDocument } from '~/utils/article'
 
 /**
  * 記事ページ /<cluster>/<slug>/(shikaku / tenshoku / shisetsu / shokushu)。
@@ -25,7 +24,7 @@ const cluster = String(route.params.cluster)
 const slug = String(route.params.slug)
 
 const { data: doc } = await useAsyncData(`article-${cluster}-${slug}`, () =>
-  queryContent<ArticleDocument>().where({ _path: `/${cluster}/${slug}` }).findOne(),
+  queryCollection('articles').path(`/${cluster}/${slug}`).first(),
 )
 
 if (

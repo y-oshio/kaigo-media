@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { RESERVED_SLUGS } from '~/config/routes'
-import type { ArticleDocument } from '~/utils/article'
 
 /**
  * 給料ガイド記事 /kyuryo/guide/<slug>/(03章 §2)。
@@ -18,7 +17,7 @@ const route = useRoute()
 const slug = String(route.params.slug)
 
 const { data: doc } = await useAsyncData(`article-kyuryo-${slug}`, () =>
-  queryContent<ArticleDocument>().where({ _path: `/kyuryo/${slug}` }).findOne(),
+  queryCollection('articles').path(`/kyuryo/${slug}`).first(),
 )
 
 if (!doc.value || doc.value.cluster !== 'kyuryo' || !isPublishable(doc.value)) {

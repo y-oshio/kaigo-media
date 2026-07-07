@@ -16,7 +16,7 @@ interface Props {
 }
 const props = withDefaults(defineProps<Props>(), {
   heading: '診断はここまで。次のステップへ',
-  label: 'あなたに合う介護求人をLINEで無料で受け取る',
+  label: '介護の仕事について、LINEで相談・情報を受け取る',
   note: '友だち追加は無料・LINEを閉じてもブロックはされません',
   resultType: undefined,
 })
@@ -56,5 +56,8 @@ function onClick() {
       <span>{{ label }}</span>
     </a>
     <p class="mt-3 text-xs text-green-900/70">{{ note }}</p>
+    <p class="mt-2 text-xs text-green-900/70">
+      ※ 本アカウントでは今後、提携する求人サービス等の紹介(広告)を行う場合があります
+    </p>
   </div>
 </template>

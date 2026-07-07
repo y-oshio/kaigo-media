@@ -56,4 +56,14 @@ export default defineNuxtConfig({
   nitro: {
     preset: 'vercel',
   },
+  // ISR(cache-until-redeploy)— コンテンツは全てビルド時確定のため動的レンダリング不要(41章 §1)
+  // 注: /sitemap.xml への個別isr指定は入れない — @nuxtjs/sitemapモジュールがsetup時に
+  // routeRules['/sitemap.xml'] を{}で上書きするため実質無効(死んだ設定になる)。
+  // 現構成(zeroRuntime未使用)では上書き後も /** の isr:true を継承する。
+  // sitemapはビルド時確定データから生成されるため、この継承で実害はない。
+  routeRules: {
+    '/**': { isr: true },
+    '/go/**': { isr: false }, // アフィリエイト302は都度実行(計測・リンク差し替え即時性)
+    '/api/**': { isr: false }, // sitemapソース等、ライブクエリ
+  },
 })

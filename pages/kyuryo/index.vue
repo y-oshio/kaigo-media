@@ -48,7 +48,6 @@ useSeoMeta({
   // 承認済みデータが無い間(準備中表示)は検索に出さない
   ...(national ? {} : { robots: 'noindex' }),
 })
-useHead({ link: [{ rel: 'canonical', href: canonicalUrl }] })
 </script>
 
 <template>

@@ -31,7 +31,6 @@ useSeoMeta({
 })
 
 useHead({
-  link: [{ rel: 'canonical', href: canonicalUrl.value }],
   script: [
     {
       type: 'application/ld+json',

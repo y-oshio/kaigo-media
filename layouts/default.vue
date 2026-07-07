@@ -1,3 +1,7 @@
+<script setup lang="ts">
+useCanonical()
+</script>
+
 <template>
   <div class="flex min-h-screen flex-col bg-white">
     <SiteHeader />

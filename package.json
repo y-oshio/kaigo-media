@@ -12,7 +12,9 @@
     "content-lint": "node scripts/content-lint.mjs",
     "verify:kyuryo": "node scripts/verify-kyuryo-c2.mjs",
     "kb-promote": "node scripts/kb-promote.mjs",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "check": "npm run kb-lint && npm run content-lint && npm run verify:kyuryo && npm run typecheck",
+    "check:ci": "npm run check && npm run build"
   },
   "devDependencies": {
     "@nuxt/content": "^2.13.4",

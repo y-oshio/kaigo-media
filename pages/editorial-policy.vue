@@ -64,7 +64,7 @@ useSeoMeta({
     <section class="mt-8">
       <h2 class="text-lg font-bold">6. 訂正の方針</h2>
       <p class="mt-3 leading-relaxed text-gray-700">
-        内容の誤りに気づかれた場合は、<NuxtLink to="/contact/" class="text-brand-700 underline underline-offset-2">お問い合わせ</NuxtLink>からご連絡ください(連絡手段は準備中です)。
+        内容の誤りに気づかれた場合は、<NuxtLink to="/contact/" class="text-brand-700 underline underline-offset-2">お問い合わせ</NuxtLink>からご連絡ください。
         誤りが確認された場合はすみやかに訂正し、更新日を改めます。
       </p>
     </section>

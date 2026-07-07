@@ -25,3 +25,15 @@ export const THEME_COLOR = '#16a34a'
  * 空文字にすると LineCta は全ページで非表示になる。
  */
 export const LINE_ADD_URL = 'https://lin.ee/YV0F2dA'
+
+/**
+ * 運営者名義(/about/ 「運営者」欄の唯一の参照点)。
+ * 株式会社プレステールシステム(2026-07-07 ユーザー提供)。
+ */
+export const OPERATOR_NAME = '株式会社プレステールシステム'
+
+/**
+ * お問い合わせフォームURL(外部フォーム。/contact/ から参照)。
+ * 2026-07-07 ユーザー提供の実在フォーム。
+ */
+export const CONTACT_FORM_URL = 'https://forms.gle/uQdCAadrUXd6mqMc8'

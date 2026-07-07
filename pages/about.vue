@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { SITE_NAME } from '~/config/site'
+import { SITE_NAME, OPERATOR_NAME } from '~/config/site'
 
 useSeoMeta({
   title: '運営者情報',
@@ -47,13 +47,12 @@ useSeoMeta({
       <dl class="mt-3 space-y-2 text-gray-700">
         <div class="flex gap-3">
           <dt class="w-24 shrink-0 font-semibold">名義</dt>
-          <dd>準備中(サイト正式公開までに掲載します)</dd>
+          <dd>{{ OPERATOR_NAME }}</dd>
         </div>
         <div class="flex gap-3">
           <dt class="w-24 shrink-0 font-semibold">連絡先</dt>
           <dd>
-            準備中 —
-            <NuxtLink to="/contact/" class="text-brand-700 underline underline-offset-2">お問い合わせ</NuxtLink>のページをご覧ください
+            <NuxtLink to="/contact/" class="text-brand-700 underline underline-offset-2">お問い合わせ</NuxtLink>のページからご連絡ください
           </dd>
         </div>
       </dl>

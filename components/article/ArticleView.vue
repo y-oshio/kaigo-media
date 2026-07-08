@@ -44,8 +44,11 @@ useHead({
         mainEntityOfPage: canonicalUrl.value,
         inLanguage: 'ja',
         // 実在の執筆者が data/authors.ts に登録されるまで author は組織名義(架空人物の生成禁止 — 04章)
+        // isOrganization: true の登録(編集部名義等)は Organization としてマークアップする(Person誤表示の防止)
         author: author.value
-          ? { '@type': 'Person', name: author.value.name }
+          ? author.value.isOrganization
+            ? { '@type': 'Organization', name: author.value.name, url: SITE_URL }
+            : { '@type': 'Person', name: author.value.name }
           : { '@type': 'Organization', name: SITE_NAME, url: SITE_URL },
         ...(supervisor.value
           ? {

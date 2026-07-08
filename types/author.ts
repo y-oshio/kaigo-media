@@ -9,4 +9,6 @@ export interface Author {
   bio: string
   sameAs?: string[] // SNS・外部実績URL(Person schema に出力)
   avatar?: string
+  /** 個人ではなく編集部等の組織名義の場合 true。JSON-LDの@typeをOrganizationにする(ArticleView.vue) */
+  isOrganization?: boolean
 }

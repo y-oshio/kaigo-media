@@ -12,6 +12,7 @@ export type ArticleDocument = ArticlesCollectionItem
  */
 export function publishBlockers(doc: Partial<ArticleDocument>): string[] {
   const blockers: string[] = []
+  if (doc.draft) blockers.push('draft: true のため非公開です')
   if (!doc.title) blockers.push('title がありません')
   if (!doc.description) blockers.push('description がありません')
   if (!doc.publishedAt) blockers.push('publishedAt がありません')

@@ -31,6 +31,7 @@ export default defineContentConfig({
         updatedAt: DATE.optional(),
         sources: z.array(articleSource).min(1),
         prRelated: z.boolean().optional(),
+        draft: z.boolean().optional(),
       }),
     }),
   },

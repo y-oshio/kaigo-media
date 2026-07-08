@@ -21,12 +21,12 @@ tools: Read, Grep, Glob, Write, Bash
 
 ## 出力
 1. `publish-manifest`(schemas/publish-manifest.schema.json)を `work/<orderId>/manifests/kw-<id>.manifest.json` に:
-   - { kwId, slug, targetPath(content/<cluster>/<slug>.md), status(ready/awaiting-supervisor/blocked), blockedReasons[], checklist{項目→結果}, inboundInstructions[](link-plan から転記), jsonldPath, humanActions[](人間がやること: 公開承認/監修依頼送付/体験談挿入 等), publishOrder(バッチ内リンク依存の公開順) }
+   - { kwId, slug, targetPath(content/<cluster>/<slug>.md), status(ready/awaiting-supervisor/blocked), blockedReasons[], checklist{項目→結果}, inboundInstructions[](link-plan から転記), jsonldPath(該当する場合のみ — content記事は schema-generator がファイルを生成しないため通常は無し), humanActions[](人間がやること: 公開承認/監修依頼送付/体験談挿入 等), publishOrder(バッチ内リンク依存の公開順) }
 2. 公開用最終ファイルを `work/<orderId>/final/<cluster>/<slug>.md` に配置(frontmatter 完成・JSON-LD 参照情報込み)
 3. バッチ全記事の完了後(または自分が最後の1件を処理した時)`work/<orderId>/manifest-summary.md` を更新: ステータス別件数表+humanActions の一覧
 
 ## 判断基準
-1. **blocked**: publish-gate の必須項目が1つでも fail / factcheck blockers あり / eeat verdict が pass 以外 / jsonld validation 警告が unresolved / orphanRisk: true
+1. **blocked**: publish-gate の必須項目が1つでも fail / factcheck blockers あり / eeat verdict が pass 以外 / schema-generator の QA報告が fail または warnings が unresolved / orphanRisk: true
 2. **awaiting-supervisor**: 全項目 pass だが supervisor.required=true で監修未完了
 3. **ready**: 全項目 pass + 監修不要 or 監修完了。**ready でも公開は人間の承認後**(このシステムの憲法)
 4. スクリプトが実行可能な環境では必ず機械チェック(scripts/)を先に走らせ、目視チェックはその補完とする

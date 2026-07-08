@@ -13,7 +13,7 @@
 | 4 | ファクトチェック | fact-checker | draft → checked.md + report | 記事ごと(並行) |
 | 5 | E-E-A-T審査 | eeat-reviewer | checked → eeat-report(fix時 writer と最大2往復) | 記事ごと(並行) |
 | 6 | 内部リンク | internal-linker | checked → linked.md + link-plan | 記事ごと(並行) |
-| 7 | JSON-LD | schema-generator | linked → jsonld-output | 記事ごと(並行) |
+| 7 | JSON-LD QA | schema-generator | linked → QA結果(publish-managerへ直接報告、ファイル生成なし) | 記事ごと(並行) |
 | 8 | 最終ゲート | publish-manager | 全成果物 → publish-manifest + final/ | 記事ごと+summary はバッチ末尾 |
 
 - ステージ2〜8は `pipeline()`(バリアなし)。記事Aがステージ6にいる間に記事Bはステージ3でよい

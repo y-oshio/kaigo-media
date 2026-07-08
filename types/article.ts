@@ -44,4 +44,6 @@ export interface ArticleFrontmatter {
    * true の記事は本文冒頭にPR表記が自動表示される。
    */
   prRelated?: boolean
+  /** 公開承認前は true(人間が false にする、または削除する = 公開) — utils/article.ts の publishBlockers() が実際のゲート */
+  draft?: boolean
 }

@@ -48,7 +48,7 @@ ai-company/
              [fact-checker]      出典検証 → factcheck-report(未解決なら差し戻し)
              [eeat-reviewer]     E-E-A-T/法令/校閲 → eeat-report
              [internal-linker]   内部リンク設計 → link-plan
-             [schema-generator]  JSON-LD生成 → jsonld-output
+             [schema-generator]  JSON-LD QA検証(ArticleView.vue等の自動生成が正しくなるかを確認、ファイル生成なし)
              [publish-manager]   最終ゲート → publish-manifest(ready / blocked / awaiting-supervisor)
 ```
 
